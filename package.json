@@ -1,0 +1,11 @@
+{
+  "name": "import",
+  "version": "0.0.1",
+  "repository": "git://github.com:gingkoapp/import.git",
+  "description": "Import data to Gingko tree format",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "stat": "cloc index.js --quiet --by-file && cloc test/*.js --quiet --by-file"
+  }
+}
