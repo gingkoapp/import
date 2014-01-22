@@ -8,7 +8,7 @@ module.exports = gingkoImport;
  * Convert markdown `text` to gingko tree json represenation.
  *
  * @param {String} text - markdown text
- * @return {Object} - json represenation of gingko tree
+ * @return {Array} - json represenation of gingko tree
  * @api public
  */
 
