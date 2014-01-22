@@ -1,5 +1,5 @@
 {
-  "name": "import",
+  "name": "gingko-import",
   "version": "0.0.1",
   "repository": "git://github.com:gingkoapp/import.git",
   "description": "Import data to Gingko tree format",
