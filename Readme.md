@@ -1,6 +1,13 @@
 # Import
 
   Convert text in markdown format to gingko tree json represenation.
+  
+## Parsing Markdown Structure
+  One possible approach is to take the document as a string, split it on any headers and paragraphs, and use the following rules to determine the appropriate level:
+  1. If current block has a heading, level of block = level of heading.
+  2. If current block has no heading (e.g. paragraph block), level of block = level of previous block.
+  
+Once the document has been broken down into an ordered list of blocks, each tagged with level information, should be simple to convert to required JSON format, by starting at the lowest level, and adding children appropriately.
 
 ## Gingko json representation
 
