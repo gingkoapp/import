@@ -1,2 +1,6 @@
 .DS_Store
 /node_modules
+
+# IntelliJ IDE
+*.iml
+.idea
