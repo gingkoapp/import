@@ -1,6 +1,6 @@
 [
   {
-    "content": "# ![](https://dl.dropboxusercontent.com/s/59l6saq7jp74e8e/glyphicons_134_inbox_in.png?dl=1&token_hash=AAH5cFhXhVa9kEjvki-CMy5QBrzkH_Gp2WzRLf4SA_g2zQ) **Inbox**",
+    "content": "#![](https://dl.dropboxusercontent.com/s/59l6saq7jp74e8e/glyphicons_134_inbox_in.png?dl=1&token_hash=AAH5cFhXhVa9kEjvki-CMy5QBrzkH_Gp2WzRLf4SA_g2zQ) **Inbox**",
     "children": [
       {
         "content": "An example inbox item"
@@ -11,7 +11,7 @@
     ]
   },
   {
-    "content": "# &#x25b6; Next Actions",
+    "content": "#&#x25b6; Next Actions",
     "children": [
       {
         "content": "## @work-computer",
@@ -39,7 +39,7 @@
     ]
   },
   {
-    "content": "# ![](https://dl.dropboxusercontent.com/s/u1fgejewqd69oa2/glyphicons_174_pause.png?dl=1&token_hash=AAFEhP4LIm1Lu1UF3FAst8r8EbzhG3eNLBe5rK9zqvr0sg)  Waiting For"
+    "content": "#![](https://dl.dropboxusercontent.com/s/u1fgejewqd69oa2/glyphicons_174_pause.png?dl=1&token_hash=AAFEhP4LIm1Lu1UF3FAst8r8EbzhG3eNLBe5rK9zqvr0sg)  Waiting For"
   },
   {
     "content": "# ![](https://dl.dropboxusercontent.com/s/l9f86ggmqllo2i8/glyphicons_144_folder_open.png?dl=1&token_hash=AAFdWjjCq1uocCr4jjcjFAvcvoFCYRX1p6W32ujkeCOgkA) Projects",

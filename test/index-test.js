@@ -15,7 +15,7 @@ describe('Functional tests', function() {
   });
 
   it('creates block for a header', function() {
-    expect(gingkoImport('#H1')).eql([
+    expect(gingkoImport('# H1')).eql([
       { content: '# H1' }
     ]);
   });
@@ -128,16 +128,11 @@ describe('Functional tests', function() {
 
   it('lists imported inline', function() {
     expect(md_import_lines(
-      '   * a',
-      '   * b',
-      '   * c'
+      '  * a',
+      '  * b',
+      '  * c'
     )).eql([
-        {
-          "content": '' +
-            '   * a\n' +
-            '   * b\n' +
-            '   * c\n' +
-            '' }
+        { "content": "  * a\n  * b\n  * c" }
       ]);
   });
   it('numbered lists');
@@ -195,34 +190,4 @@ describe('Real-world examples', function() {
 
     expect(result).eql(json);
   });
-});
-
-describe("Unit tests", function() {
-  var expect = require('chai').expect;
-  var gingkoImport = require('..');
-
-  it("as_blocks", function() {
-    var a = [
-      { type: 'heading', depth: 1, text: 'Alien' },
-      { type: 'paragraph', text: 'The small crew of a deep space ...' },
-      { type: 'heading', depth: 3, text: 'Final Image' },
-      { type: 'paragraph', text: 'foo' }
-    ];
-    expect(gingkoImport._as_blocks(a)).eql([
-      {
-        "depth": 1,
-        "content": "# Alien",
-        "paragraphs": [
-          "The small crew of a deep space ..."
-        ]
-      },
-      {
-        "depth": 3,
-        "content": "### Final Image",
-        "paragraphs": [
-          "foo"
-        ]
-      }
-    ])
-  })
 });

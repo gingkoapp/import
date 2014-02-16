@@ -34,39 +34,27 @@ function as_blocks(tokens) {
   _.each(tokens, function(t) {
     switch (t.type) {
       case 'heading':
-        var content = (new Array(t.depth + 1)).join('#') + ' ' + t.text;
-        acc.push({depth: t.depth, content: content, paragraphs: []});
+        acc.push({depth: t.depth, content: t.src.trim(), paragraphs: []});
         break;
 
       case 'paragraph':
-        create_paragraph(acc, t.text);
-        break;
-
-      case 'list_start':
-        create_paragraph(acc, '');
+      case 'code':
+      case 'list_end':
+        if (!t.src) {
+          console.warn("Empty src for token: " + t.type);
+        }
+        create_paragraph(acc, t.src);
         break;
 
       case 'list_item_start':
-        append_to_last_paragraph(acc, '   * ');
-        break;
-
+      case 'loose_item_start':
       case 'text':
-        append_to_last_paragraph(acc, t.text);
-        break;
-
       case 'list_item_end':
-        append_to_last_paragraph(acc, '\n');
-        break;
-
-      case 'code':
-        create_paragraph(acc, _.map(t.text.split('\n'),function(s) {
-          return '    ' + s
-        }).join("\n"));
-        break;
-
-      case 'list_end':
-      case 'space':
-        //ignore
+      case 'list_start':
+        if (t.src) {
+          console.warn("Non-empty src for ignored token: " + t.type);
+        }
+        //ignore, it's included in 'list_start'
         break;
 
       default:
@@ -112,7 +100,7 @@ function nested_blocks(blocks) {
 
 function paragraphs_as_blocks(paragraphs) {
   return _.map(paragraphs, function(p) {
-    return {content: p}
+    return {content: p.trimRight()}
   })
 }
 function nested_blocks_to_gingko(n_blocks) {
@@ -123,7 +111,8 @@ function nested_blocks_to_gingko(n_blocks) {
       if (content && block.paragraphs.length) {
         content += '\n\n';
       }
-      content += block.paragraphs.join("\n\n");
+      content += block.paragraphs.join("");
+      content = content.trimRight();
     } else {
       block.children = paragraphs_as_blocks(block.paragraphs);
     }
