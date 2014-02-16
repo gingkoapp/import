@@ -21,7 +21,7 @@ describe('gingko-import Functional', function() {
       '# h1\n' +
       'text\n'
     )).eql([
-        { content: "# h1\ntext" }
+        { content: "# h1\n\ntext" }
       ]);
   });
 
@@ -72,10 +72,20 @@ describe('gingko-import Functional', function() {
       ]);
   });
 
+  it('paragraph separator double newline is kept', function() {
+    expect(gingkoImport('' +
+      'p1\n' +
+      '\n' +
+      'p2'
+    )).eql([
+        { content: "p1\n\np2"}
+      ]);
+  });
 
-  it.skip('converts canonical tree by headers', function() {
+
+  it('converts canonical tree by headers', function() {
     var text = readFile(__dirname + '/fixtures/alien-1979.txt', 'utf-8');
-    var json = readFile(__dirname + '/fixtures/alien-1979.json', 'utf-8');
+    var json = JSON.parse(readFile(__dirname + '/fixtures/alien-1979.json', 'utf-8'));
     var result = gingkoImport(text);
 
     expect(result).equal(json);
@@ -105,11 +115,11 @@ describe("gingko-import Unit", function() {
     expect(gingkoImport._as_blocks(a)).eql([
       {
         "depth": 1,
-        "content": "# Alien\nThe small crew of a deep space ..."
+        "content": "# Alien\n\nThe small crew of a deep space ..."
       },
       {
         "depth": 3,
-        "content": "### Final Image\nfoo"
+        "content": "### Final Image\n\nfoo"
       }
     ])
   })

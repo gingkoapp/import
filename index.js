@@ -17,6 +17,9 @@ function token_to_text(t) {
   if (t.type == 'heading') {
     return (new Array(t.depth + 1)).join('#') + ' ' + t.text;
   }
+  if (t.type == 'paragraph') {
+    return '\n\n' + t.text;
+  }
   return t.text;
 }
 
@@ -28,9 +31,10 @@ function as_blocks(tokens) {
       acc.push({depth: t.depth, content: content});
     } else {
       if (!acc.length) {
-        acc.push({depth: 1, content: ""})
+        acc.push({depth: 1, content: content.trimLeft()})
+      } else {
+        _.last(acc).content += content;
       }
-      _.last(acc).content += ('\n' + content);
     }
   });
   return acc;
