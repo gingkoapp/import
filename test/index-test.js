@@ -135,7 +135,17 @@ describe('Functional tests', function() {
         { "content": "  * a\n  * b\n  * c" }
       ]);
   });
-  it('nested lists');
+
+  it('nested lists are kept in one block', function() {
+    expect(md_import_lines(
+      '  * a',
+      '    1. b',
+      '    2. c',
+      '  * d'
+    )).eql([
+        { "content": "  * a\n    1. b\n    2. c\n  * d" }
+      ]);
+  });
 
   it('blockquote in leaf is kept as one block', function() {
     expect(md_import_lines(
