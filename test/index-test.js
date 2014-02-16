@@ -64,7 +64,7 @@ describe('Functional tests', function() {
   ]);
 
   it_should_import_lines_as('paragraph separator double newline is kept', [
-    '# h1',
+    '# h1\n',
     'p1\n',
     'p2\n',
     '## h2'
@@ -95,7 +95,7 @@ describe('Functional tests', function() {
     '# h',
     'p1'
   ], [
-    { content: "# h\n\np1"}
+    { content: "# h\np1"}
   ]);
 
   it_should_import_lines_as('paragraphs are kept in block if there are child header-blocks', [
@@ -104,7 +104,7 @@ describe('Functional tests', function() {
     '## h'
   ], [
     {
-      "content": "# h\n\np1",
+      "content": "# h\np1",
       "children": [
         {
           "content": "## h"

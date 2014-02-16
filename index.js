@@ -6,35 +6,31 @@ module.exports = gingkoImport;
 
 var _ = require('underscore');
 
-//var EXAMPLE = [
-//  { type: 'heading', depth: 1, text: 'Alien' },
-//  { type: 'paragraph', text: 'The small crew of a deep space ...' },
-//  { type: 'heading', depth: 3, text: 'Final Image' }
-//]
-
-
-function current_block(acc) {
-  if (!acc.length) {
-    acc.push({depth: 1, content: "", paragraphs: []})
-  }
-  return _.last(acc);
-}
-function append_to_last_paragraph(acc, text) {
-  var block = current_block(acc);
-  if (!block.paragraphs.length) {
-    block.paragraphs.push("")
-  }
-  block.paragraphs[block.paragraphs.length - 1] = _.last(block.paragraphs) + text;
-}
-function create_paragraph(acc, text) {
-  current_block(acc).paragraphs.push(text);
-}
+/**
+ * Creates reasonable chunks from the md tokens containing the md text and depth information
+ *
+ * @param tokens
+ * @returns {Array} of {content, paragraphs, [depth]} objects
+ */
 function as_blocks(tokens) {
-  var acc = [];
+  var blocks = [];
+
+  /**
+   * Get or create the last block and append text as a new paragraph (will be processed at a later step)
+   * @param text
+   */
+  function add_paragraph_to_block(text) {
+    if (!blocks.length) {
+      blocks.push({depth: 1, header: "", paragraphs: []})
+    }
+    _.last(blocks).paragraphs.push(text);
+  }
+
+
   _.each(tokens, function(t) {
     switch (t.type) {
       case 'heading':
-        acc.push({depth: t.depth, content: t.src.trim(), paragraphs: []});
+        blocks.push({depth: t.depth, header: t.src, paragraphs: []});
         break;
 
       case 'paragraph':
@@ -43,7 +39,7 @@ function as_blocks(tokens) {
         if (!t.src) {
           console.warn("Empty src for token: " + t.type);
         }
-        create_paragraph(acc, t.src);
+        add_paragraph_to_block(t.src);
         break;
 
       case 'list_item_start':
@@ -54,20 +50,29 @@ function as_blocks(tokens) {
         if (t.src) {
           console.warn("Non-empty src for ignored token: " + t.type);
         }
-        //ignore, it's included in 'list_start'
         break;
 
       default:
-        // only for development
         console.warn("Unknown marked token: " + t.type);
         if (t.text) {
-          append_to_last_paragraph(acc, t.text)
+          add_paragraph_to_block(t.text)
         }
     }
   });
-  return acc;
+  return blocks;
 }
 
+/**
+ * Creates a ginkgo-tree-like nested structure from the flat block array
+ * @param {Array} blocks
+ * @returns {Array}
+ */
+function nested_blocks(blocks) {
+  var acc = [];
+  var depth = 1;
+  _nested_blocks(blocks, acc, depth);
+  return acc;
+}
 
 function _nested_blocks(blocks, acc, depth) {
   while (blocks.length) {
@@ -78,7 +83,7 @@ function _nested_blocks(blocks, acc, depth) {
     } else if (block.depth > depth) {
       // go in
       if (!acc.length) {
-        acc.push({depth: depth, content: '', paragraphs: []});
+        acc.push({depth: depth, header: '', paragraphs: []});
       }
       var last = _.last(acc);
       last.children = [];
@@ -91,32 +96,24 @@ function _nested_blocks(blocks, acc, depth) {
   return blocks; //empty by now
 }
 
-function nested_blocks(blocks) {
-  var acc = [];
-  var depth = 1;
-  _nested_blocks(blocks, acc, depth);
-  return acc;
-}
-
-function paragraphs_as_blocks(paragraphs) {
-  return _.map(paragraphs, function(p) {
-    return {content: p.trimRight()}
-  })
-}
-function nested_blocks_to_gingko(n_blocks) {
-  return _.map(n_blocks, function(block) {
-    var content = block.content;
+/**
+ * Creates the final gingko json structure from the nested_blocks
+ *
+ * Decides on which paragraphs to include inline (eg one paragraph after header) and what to render as sub-nodes.
+ *
+ * @param nested_blocks
+ * @returns {Array} - gingko JSON
+ */
+function nested_blocks_to_gingko(nested_blocks) {
+  return _.map(nested_blocks, function(block) {
+    var content = block.header;
     var inline_paragraphs = block.children && block.children.length || (block.paragraphs && block.paragraphs.length <= 1);
     if (inline_paragraphs) {
-      if (content && block.paragraphs.length) {
-        content += '\n\n';
-      }
       content += block.paragraphs.join("");
-      content = content.trimRight();
     } else {
       block.children = paragraphs_as_blocks(block.paragraphs);
     }
-    var o = {content: content};
+    var o = {content: content.trimRight()};
     if (block.children && block.children.length) {
       o.children = nested_blocks_to_gingko(block.children);
     }
@@ -124,12 +121,14 @@ function nested_blocks_to_gingko(n_blocks) {
   })
 }
 
-function gingko_from_marked_tokens(tokens) {
-
-  var blocks = as_blocks(tokens);
-  var n_blocks = nested_blocks(blocks);
-  return nested_blocks_to_gingko(n_blocks)
+function paragraphs_as_blocks(paragraphs) {
+  return _.map(paragraphs, function(p) {
+    return {header: p.trimRight()}
+  })
 }
+
+
+gingko_from_marked_tokens = _.compose(nested_blocks_to_gingko, nested_blocks, as_blocks);
 
 
 /**
@@ -143,19 +142,25 @@ function gingko_from_marked_tokens(tokens) {
 function gingkoImport(text) {
   var marked = require('./lib/marked');
 
-  var marked_options =  {
+  var marked_options = {
     gfm: true
   };
 
   var tokens = marked.lexer(text, marked_options);
 
-  var g = gingko_from_marked_tokens(tokens);
-  if (!g.length) {
+// Token list example = [
+//  { type: 'heading', depth: 1, text: 'Alien' },
+//  { type: 'paragraph', text: 'The small crew of a deep space ...' },
+//  { type: 'heading', depth: 3, text: 'Final Image' }
+//]
+
+  var gingko_json = gingko_from_marked_tokens(tokens);
+
+  if (!gingko_json.length) {
+    // special case - an empty gingko tree should have an empty block
     return [
       { content: '' }
     ];
   }
-  return g;
+  return gingko_json;
 }
-
-gingkoImport._as_blocks = as_blocks;
