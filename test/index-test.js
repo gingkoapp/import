@@ -88,7 +88,7 @@ describe('gingko-import Functional', function() {
     var json = JSON.parse(readFile(__dirname + '/fixtures/alien-1979.json', 'utf-8'));
     var result = gingkoImport(text);
 
-    expect(result).equal(json);
+    expect(result).eql(json);
   });
 
   // not all trees are sturcutred with headers as
