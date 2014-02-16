@@ -1,6 +1,5 @@
-describe('gingko-import Functional', function() {
+describe('Functional tests', function() {
   var expect = require('chai').expect;
-  var readFile = require('fs').readFileSync;
   var gingkoImport = require('..');
 
   it('converts empty string to empty tree', function() {
@@ -121,35 +120,58 @@ describe('gingko-import Functional', function() {
       ]);
   });
 
+  it('lists imported inline', function() {
+    expect(gingkoImport('' +
+      '   * a\n' +
+      '   * b\n' +
+      '   * c\n' +
+      '')).eql([
+        {
+          "content": '' +
+            '   * a\n' +
+            '   * b\n' +
+            '   * c\n' +
+            '' }
+      ]);
+  });
 
-  it('converts canonical tree by headers', function() {
-    var text = readFile(__dirname + '/fixtures/alien-1979.txt', 'utf-8');
+  it('leaf list items imported as blocks');
+  it('code in leaf is kept as one block');
+
+
+});
+
+describe('Real-world examples', function() {
+  var expect = require('chai').expect;
+  var readFile = require('fs').readFileSync;
+  var gingkoImport = require('..');
+
+  it('Alien', function() {
+    var text = readFile(__dirname + '/fixtures/alien-1979.md', 'utf-8');
     var json = JSON.parse(readFile(__dirname + '/fixtures/alien-1979.json', 'utf-8'));
     var result = gingkoImport(text);
 
     expect(result).eql(json);
   });
 
-  it('GTD fixture', function() {
-    var text = readFile(__dirname + '/fixtures/gtd.txt', 'utf-8');
+  it('GTD', function() {
+    var text = readFile(__dirname + '/fixtures/gtd.md', 'utf-8');
     var json = JSON.parse(readFile(__dirname + '/fixtures/gtd.json', 'utf-8'));
     var result = gingkoImport(text);
 
     expect(result).eql(json);
   });
 
-// not all trees are sturcutred with headers as
-// h1 - first level
-// h2 - second, and etc
-//
-// many of them start with plain text, and don't care about headers at all.
-  it('works with any plain text markdown');
+  it.skip('reworkcss', function() {
+    var text = readFile(__dirname + '/fixtures/reworkcss.md', 'utf-8');
+    var json = JSON.parse(readFile(__dirname + '/fixtures/reworkcss.json', 'utf-8'));
+    var result = gingkoImport(text);
 
+    expect(result).eql(json);
+  });
+});
 
-})
-;
-
-describe("gingko-import Unit", function() {
+describe("Unit tests", function() {
   var expect = require('chai').expect;
   var gingkoImport = require('..');
 

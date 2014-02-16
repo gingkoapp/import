@@ -13,24 +13,60 @@ var _ = require('underscore');
 //]
 
 
-function token_to_text(t) {
-  if (t.type == 'heading') {
-    return (new Array(t.depth + 1)).join('#') + ' ' + t.text;
+function current_block(acc) {
+  if (!acc.length) {
+    acc.push({depth: 1, content: "", paragraphs: []})
   }
-  return t.text;
+  return _.last(acc);
 }
-
+function append_to_last_paragraph(acc, text) {
+  var block = current_block(acc);
+  if (!block.paragraphs.length) {
+    block.paragraphs.push("")
+  }
+  block.paragraphs[block.paragraphs.length - 1] = _.last(block.paragraphs) + text;
+}
+function create_paragraph(acc, text) {
+  current_block(acc).paragraphs.push(text);
+}
 function as_blocks(tokens) {
   var acc = [];
   _.each(tokens, function(t) {
-    var txt = token_to_text(t);
-    if (t.depth) {
-      acc.push({depth: t.depth, content: txt, paragraphs: []});
-    } else {
-      if (!acc.length) {
-        acc.push({depth: 1, content: "", paragraphs: []})
-      }
-      _.last(acc).paragraphs.push(txt);
+    switch (t.type) {
+      case 'heading':
+        var content = (new Array(t.depth + 1)).join('#') + ' ' + t.text;
+        acc.push({depth: t.depth, content: content, paragraphs: []});
+        break;
+
+      case 'paragraph':
+        create_paragraph(acc, t.text);
+        break;
+
+      case 'list_start':
+        create_paragraph(acc, '');
+        break;
+
+      case 'list_item_start':
+        append_to_last_paragraph(acc, '   * ');
+        break;
+
+      case 'text':
+        append_to_last_paragraph(acc, t.text);
+        break;
+
+      case 'list_item_end':
+        append_to_last_paragraph(acc, '\n');
+        break;
+
+      case 'list_end':
+        //ignore
+        break;
+      default :
+        // only for development
+        console.warn("Unknown marked token: " + t.type);
+        if (t.text) {
+          append_to_last_paragraph(acc)
+        }
     }
   });
   return acc;
