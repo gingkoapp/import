@@ -1,4 +1,4 @@
-describe('gingko-import', function() {
+describe('gingko-import Functional', function() {
   var expect = require('chai').expect;
   var readFile = require('fs').readFileSync;
   var gingkoImport = require('..');
@@ -41,7 +41,7 @@ describe('gingko-import', function() {
       '## h2\n'
     )).eql([
         { content: "# h1", children: [
-          {content: '# h2'}
+          {content: '## h2'}
         ] }
       ]);
   });
@@ -53,7 +53,7 @@ describe('gingko-import', function() {
       '# h1\n'
     )).eql([
         { content: "# h1", children: [
-          {content: '# h2'}
+          {content: '## h2'}
         ] },
         { content: "# h1" }
       ]);
@@ -75,4 +75,29 @@ describe('gingko-import', function() {
   // many of them start with plain text, and don't care about headers at all.
   it('works with any plain text markdown');
 
+
+});
+
+describe("gingko-import Unit", function() {
+  var expect = require('chai').expect;
+  var gingkoImport = require('..');
+
+  it("as_blocks", function() {
+    var a = [
+      { type: 'heading', depth: 1, text: 'Alien' },
+      { type: 'paragraph', text: 'The small crew of a deep space ...' },
+      { type: 'heading', depth: 3, text: 'Final Image' },
+      { type: 'paragraph', text: 'foo' }
+    ];
+    expect(gingkoImport._as_blocks(a)).eql([
+      {
+        "depth": 1,
+        "content": "# Alien\nThe small crew of a deep space ..."
+      },
+      {
+        "depth": 3,
+        "content": "### Final Image\nfoo"
+      }
+    ])
+  })
 });

@@ -12,65 +12,69 @@ var _ = require('underscore');
 //  { type: 'heading', depth: 3, text: 'Final Image' }
 //]
 
-function item(tokens) {
 
-  var head = _.head(tokens);
-  var tail = _.tail(tokens);
-
-  var o = {
-    content: head.text,
-    children: [],
-    tail: tail,
-    cont: true
-  };
-
-  switch (head.type) {
-    case 'heading':
-      o.content = '# ' + head.text;
-      o.cont = false;
-      o.depth = head.depth;
-      break;
+function token_to_text(t) {
+  if (t.type == 'heading') {
+    return (new Array(t.depth + 1)).join('#') + ' ' + t.text;
   }
+  return t.text;
+}
+
+function as_blocks(tokens) {
+  var acc = [];
+  _.each(tokens, function(t) {
+    var content = token_to_text(t);
+    if (t.depth) {
+      acc.push({depth: t.depth, content: content});
+    } else {
+      if (!acc.length) {
+        acc.push({depth: 1, content: ""})
+      }
+      _.last(acc).content += ('\n' + content);
+    }
+  });
+  return acc;
+}
+
+
+function final_block(block) {
+  var o = _.clone(block);
+  delete o['depth'];
   return o;
 }
 
-function gingko_from_marked_tokens(tokens) {
-  var acc = [
-    { content: '' }
-  ]; //gingko result accumulator
-  var depth = 1; // Top level paragraphs and H1 has depth 1
-
-  return _gingko_from_marked_tokens(tokens, acc, depth)
-}
-
-function _gingko_from_marked_tokens(tokens, acc, depth) {
-
-  if (!tokens.length) {
-    return acc;
-  } else {
-    var i = item(tokens);
-    var last_block = _.last(acc);
-    if (i.cont) {
-      // continue last block
-      last_block.content += ('\n' + i.content);
+function _gingko_from_blocks(blocks, acc, depth) {
+  while (blocks.length) {
+    var block = _.head(blocks);
+    if (block.depth == depth) {
+      acc.push(final_block(block));
+      blocks = _.tail(blocks);
+    } else if (block.depth > depth) {
+      // go in
+      var last = _.last(acc);
+      last.children = [];
+      blocks = _gingko_from_blocks(blocks, last.children, depth + 1);
     } else {
-      if (i.depth && i.depth != depth) { // Different level header
-        if (i.depth > depth) {
-          last_block.children = last_block.children || [];
-          _gingko_from_marked_tokens(tokens, last_block.children, depth + 1);
-        }
-        if (i.depth < depth) {
-          return _gingko_from_marked_tokens(tokens, acc, depth - 1 );
-        }
-      } else {
-        // start a new block
-        acc.push({ content: i.content })
-
-      }
+      // go out
+      return blocks;
     }
-    return _gingko_from_marked_tokens(i.tail, acc, depth);
   }
+  return blocks; //empty by now
 }
+
+function gingko_from_blocks(blocks) {
+  var acc = [];
+  var depth = 1;
+  _gingko_from_blocks(blocks, acc, depth);
+  return acc;
+}
+
+function gingko_from_marked_tokens(tokens) {
+
+  var blocks = as_blocks(tokens);
+  return gingko_from_blocks(blocks);
+}
+
 
 /**
  * Convert markdown `text` to gingko tree json represenation.
@@ -88,10 +92,12 @@ function gingkoImport(text) {
   var tokens = marked.lexer(text, marked_options);
 
   var g = gingko_from_marked_tokens(tokens);
-  var head = _.head(g);
-  var tail = _.tail(g);
-  if (!head.content && tail.length) {
-    return tail;
+  if (!g.length) {
+    return [
+      { content: '' }
+    ];
   }
-  return g
+  return g;
 }
+
+gingkoImport._as_blocks = as_blocks;
