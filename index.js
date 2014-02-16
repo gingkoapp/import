@@ -143,7 +143,9 @@ function gingko_from_marked_tokens(tokens) {
 function gingkoImport(text) {
   var marked = require('./lib/marked');
 
-  var marked_options = {};
+  var marked_options =  {
+    gfm: true
+  };
 
   var tokens = marked.lexer(text, marked_options);
 

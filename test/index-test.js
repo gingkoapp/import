@@ -135,10 +135,9 @@ describe('Functional tests', function() {
         { "content": "  * a\n  * b\n  * c" }
       ]);
   });
-  it('numbered lists');
-  it('nested-mixed lists');
+  it('nested lists');
 
-  it('code in leaf is kept as one block', function() {
+  it('blockquote in leaf is kept as one block', function() {
     expect(md_import_lines(
       'with node:',
       '',
@@ -156,6 +155,17 @@ describe('Functional tests', function() {
             }
           ]
         }
+      ]);
+  });
+
+  it('code in leaf is kept as one block', function() {
+    expect(md_import_lines(
+      "```css",
+      "",
+      "button {}",
+      "```"
+    )).eql([
+        { "content": "```css\n\nbutton {}\n```" }
       ]);
   });
 
