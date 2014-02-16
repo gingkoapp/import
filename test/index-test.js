@@ -49,13 +49,26 @@ describe('gingko-import Functional', function() {
   it('headers move depth in and out', function() {
     expect(gingkoImport('' +
       '# h1\n' +
-      '## h2\n'+
+      '## h2\n' +
       '# h1\n'
     )).eql([
         { content: "# h1", children: [
           {content: '## h2'}
         ] },
         { content: "# h1" }
+      ]);
+  });
+
+  it('skipping header levels creates empty block in between', function() {
+    expect(gingkoImport('' +
+      '# h\n' +
+      '### h\n'
+    )).eql([
+        { content: "# h", children: [
+          {content: '', children: [
+            {content: '### h'}
+          ]}
+        ] }
       ]);
   });
 

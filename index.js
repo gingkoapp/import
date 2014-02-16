@@ -51,6 +51,9 @@ function _gingko_from_blocks(blocks, acc, depth) {
       blocks = _.tail(blocks);
     } else if (block.depth > depth) {
       // go in
+      if (!acc.length) {
+        acc.push({content: ''});
+      }
       var last = _.last(acc);
       last.children = [];
       blocks = _gingko_from_blocks(blocks, last.children, depth + 1);
