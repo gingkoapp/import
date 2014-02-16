@@ -46,10 +46,10 @@ describe('gingko-import Functional', function() {
       ]);
   });
 
-  it.skip('headers move depth in and out', function() {
+  it('headers move depth in and out', function() {
     expect(gingkoImport('' +
       '# h1\n' +
-      '## h2\n',
+      '## h2\n'+
       '# h1\n'
     )).eql([
         { content: "# h1", children: [
