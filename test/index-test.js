@@ -46,8 +46,21 @@ describe('gingko-import', function() {
       ]);
   });
 
+  it.skip('headers move depth in and out', function() {
+    expect(gingkoImport('' +
+      '# h1\n' +
+      '## h2\n',
+      '# h1\n'
+    )).eql([
+        { content: "# h1", children: [
+          {content: '# h2'}
+        ] },
+        { content: "# h1" }
+      ]);
+  });
 
-  it('converts canonical tree by headers', function() {
+
+  it.skip('converts canonical tree by headers', function() {
     var text = readFile(__dirname + '/fixtures/alien-1979.txt', 'utf-8');
     var json = readFile(__dirname + '/fixtures/alien-1979.json', 'utf-8');
     var result = gingkoImport(text);

@@ -34,23 +34,41 @@ function item(tokens) {
   return o;
 }
 
-function gingko_from_marked_tokens(tokens, acc) {
-  acc = acc || [
+function gingko_from_marked_tokens(tokens) {
+  var acc = [
     { content: '' }
   ]; //gingko result accumulator
+  var depth = 1; // Top level paragraphs and H1 has depth 1
+
+  return _gingko_from_marked_tokens(tokens, acc, depth)
+}
+
+function _gingko_from_marked_tokens(tokens, acc, depth) {
 
   if (!tokens.length) {
     return acc;
   } else {
     var i = item(tokens);
+    var last_block = _.last(acc);
     if (i.cont) {
       // continue last block
-      _.last(acc).content += ('\n' + i.content);
+      last_block.content += ('\n' + i.content);
     } else {
-      // start a new block
-      acc.push({ content: i.content })
+      if (i.depth && i.depth != depth) { // Different level header
+        if (i.depth > depth) {
+          last_block.children = last_block.children || [];
+          _gingko_from_marked_tokens(tokens, last_block.children, depth + 1);
+        }
+        if (i.depth < depth) {
+          return _gingko_from_marked_tokens(tokens, acc, depth - 1 );
+        }
+      } else {
+        // start a new block
+        acc.push({ content: i.content })
+
+      }
     }
-    return gingko_from_marked_tokens(i.tail, acc);
+    return _gingko_from_marked_tokens(i.tail, acc, depth);
   }
 }
 
@@ -77,7 +95,3 @@ function gingkoImport(text) {
   }
   return g
 }
-
-gingkoImport._gingko_from_marked_tokens = gingko_from_marked_tokens;
-
-
