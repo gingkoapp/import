@@ -17,50 +17,40 @@ function token_to_text(t) {
   if (t.type == 'heading') {
     return (new Array(t.depth + 1)).join('#') + ' ' + t.text;
   }
-  if (t.type == 'paragraph') {
-    return '\n\n' + t.text;
-  }
   return t.text;
 }
 
 function as_blocks(tokens) {
   var acc = [];
   _.each(tokens, function(t) {
-    var content = token_to_text(t);
+    var txt = token_to_text(t);
     if (t.depth) {
-      acc.push({depth: t.depth, content: content});
+      acc.push({depth: t.depth, content: txt, paragraphs: []});
     } else {
       if (!acc.length) {
-        acc.push({depth: 1, content: content.trimLeft()})
-      } else {
-        _.last(acc).content += content;
+        acc.push({depth: 1, content: "", paragraphs: []})
       }
+      _.last(acc).paragraphs.push(txt);
     }
   });
   return acc;
 }
 
 
-function final_block(block) {
-  var o = _.clone(block);
-  delete o['depth'];
-  return o;
-}
-
-function _gingko_from_blocks(blocks, acc, depth) {
+function _nested_blocks(blocks, acc, depth) {
   while (blocks.length) {
     var block = _.head(blocks);
     if (block.depth == depth) {
-      acc.push(final_block(block));
+      acc.push(block);
       blocks = _.tail(blocks);
     } else if (block.depth > depth) {
       // go in
       if (!acc.length) {
-        acc.push({content: ''});
+        acc.push({depth: depth, content: '', paragraphs: []});
       }
       var last = _.last(acc);
       last.children = [];
-      blocks = _gingko_from_blocks(blocks, last.children, depth + 1);
+      blocks = _nested_blocks(blocks, last.children, depth + 1);
     } else {
       // go out
       return blocks;
@@ -69,17 +59,43 @@ function _gingko_from_blocks(blocks, acc, depth) {
   return blocks; //empty by now
 }
 
-function gingko_from_blocks(blocks) {
+function nested_blocks(blocks) {
   var acc = [];
   var depth = 1;
-  _gingko_from_blocks(blocks, acc, depth);
+  _nested_blocks(blocks, acc, depth);
   return acc;
+}
+
+function paragraphs_as_blocks(paragraphs) {
+  return _.map(paragraphs, function(p) {
+    return {content: p}
+  })
+}
+function nested_blocks_to_gingko(n_blocks) {
+  return _.map(n_blocks, function(block) {
+    var content = block.content;
+    var inline_paragraphs = block.children && block.children.length || (block.paragraphs && block.paragraphs.length <= 1);
+    if (inline_paragraphs) {
+      if (content && block.paragraphs.length) {
+        content += '\n\n';
+      }
+      content += block.paragraphs.join("\n\n");
+    } else {
+      block.children = paragraphs_as_blocks(block.paragraphs);
+    }
+    var o = {content: content};
+    if (block.children && block.children.length) {
+      o.children = nested_blocks_to_gingko(block.children);
+    }
+    return o;
+  })
 }
 
 function gingko_from_marked_tokens(tokens) {
 
   var blocks = as_blocks(tokens);
-  return gingko_from_blocks(blocks);
+  var n_blocks = nested_blocks(blocks);
+  return nested_blocks_to_gingko(n_blocks)
 }
 
 

@@ -16,15 +16,6 @@ describe('gingko-import Functional', function() {
   });
 
 
-  it('keeps header and following text in one block', function() {
-    expect(gingkoImport('' +
-      '# h1\n' +
-      'text\n'
-    )).eql([
-        { content: "# h1\n\ntext" }
-      ]);
-  });
-
   it('two headers make two blocks', function() {
     expect(gingkoImport('' +
       '# h1\n' +
@@ -74,11 +65,59 @@ describe('gingko-import Functional', function() {
 
   it('paragraph separator double newline is kept', function() {
     expect(gingkoImport('' +
-      'p1\n' +
-      '\n' +
-      'p2'
+      '# h1\n' +
+      'p1\n\n' +
+      'p2\n\n' +
+      '## h2\n'
     )).eql([
-        { content: "p1\n\np2"}
+        {
+          "content": "# h1\n\np1\n\np2",
+          "children": [
+            {
+              "content": "## h2"
+            }
+          ]
+        }
+      ]);
+  });
+
+  it('multiple paragraphs after header are split into child blocks', function() {
+    expect(gingkoImport('' +
+      '# h\n' +
+      'p1\n\n' +
+      'p2\n\n'
+    )).eql([
+        { content: "# h", children: [
+          { content: "p1"},
+          { content: "p2"}
+        ]
+        }
+      ]);
+  });
+
+  it('single paragraph after header is kept in the same block', function() {
+    expect(gingkoImport('' +
+      '# h\n' +
+      'p1'
+    )).eql([
+        { content: "# h\n\np1"}
+      ]);
+  });
+
+  it('paragraphs are kept in block if there are child header-blocks', function() {
+    expect(gingkoImport('' +
+      '# h\n' +
+      'p1\n' +
+      '## h\n'
+    )).eql([
+        {
+          "content": "# h\n\np1",
+          "children": [
+            {
+              "content": "## h"
+            }
+          ]
+        }
       ]);
   });
 
@@ -91,15 +130,24 @@ describe('gingko-import Functional', function() {
     expect(result).eql(json);
   });
 
-  // not all trees are sturcutred with headers as
-  // h1 - first level
-  // h2 - second, and etc
-  //
-  // many of them start with plain text, and don't care about headers at all.
+  it('GTD fixture', function() {
+    var text = readFile(__dirname + '/fixtures/gtd.txt', 'utf-8');
+    var json = JSON.parse(readFile(__dirname + '/fixtures/gtd.json', 'utf-8'));
+    var result = gingkoImport(text);
+
+    expect(result).eql(json);
+  });
+
+// not all trees are sturcutred with headers as
+// h1 - first level
+// h2 - second, and etc
+//
+// many of them start with plain text, and don't care about headers at all.
   it('works with any plain text markdown');
 
 
-});
+})
+;
 
 describe("gingko-import Unit", function() {
   var expect = require('chai').expect;
@@ -115,11 +163,17 @@ describe("gingko-import Unit", function() {
     expect(gingkoImport._as_blocks(a)).eql([
       {
         "depth": 1,
-        "content": "# Alien\n\nThe small crew of a deep space ..."
+        "content": "# Alien",
+        "paragraphs": [
+          "The small crew of a deep space ..."
+        ]
       },
       {
         "depth": 3,
-        "content": "### Final Image\n\nfoo"
+        "content": "### Final Image",
+        "paragraphs": [
+          "foo"
+        ]
       }
     ])
   })

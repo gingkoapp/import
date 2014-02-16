@@ -1,0 +1,208 @@
+[
+  {
+    "content": "# ![](https://dl.dropboxusercontent.com/s/59l6saq7jp74e8e/glyphicons_134_inbox_in.png?dl=1&token_hash=AAH5cFhXhVa9kEjvki-CMy5QBrzkH_Gp2WzRLf4SA_g2zQ) **Inbox**",
+    "children": [
+      {
+        "content": "An example inbox item"
+      },
+      {
+        "content": "a second item"
+      }
+    ]
+  },
+  {
+    "content": "# &#x25b6; Next Actions",
+    "children": [
+      {
+        "content": "## @work-computer",
+        "children": [
+          {
+            "content": "Download Q3 spreadsheet from work server."
+          },
+          {
+            "content": "Sketch outline of presentation"
+          },
+          {
+            "content": "Notes and ideas can go here. Or, complete the task right here."
+          }
+        ]
+      },
+      {
+        "content": "## @home-computer"
+      },
+      {
+        "content": "## @meeting-John"
+      },
+      {
+        "content": "## @some-other-context"
+      }
+    ]
+  },
+  {
+    "content": "# ![](https://dl.dropboxusercontent.com/s/u1fgejewqd69oa2/glyphicons_174_pause.png?dl=1&token_hash=AAFEhP4LIm1Lu1UF3FAst8r8EbzhG3eNLBe5rK9zqvr0sg)  Waiting For"
+  },
+  {
+    "content": "# ![](https://dl.dropboxusercontent.com/s/l9f86ggmqllo2i8/glyphicons_144_folder_open.png?dl=1&token_hash=AAFdWjjCq1uocCr4jjcjFAvcvoFCYRX1p6W32ujkeCOgkA) Projects",
+    "children": [
+      {
+        "content": "## An example Project\n\nDescription can go here."
+      },
+      {
+        "content": "## Another Project"
+      }
+    ]
+  },
+  {
+    "content": "# ![](https://dl.dropboxusercontent.com/s/kclencvpjbejpjl/glyphicons_045_calendar.png?dl=1&token_hash=AAH2cA2qBTt5hJ0qc7Dp9Uhhs7O08pzh6RXy6MGWtpVyxw) Tickler & Calendar",
+    "children": [
+      {
+        "content": "",
+        "children": [
+          {
+            "content": "### Months"
+          }
+        ]
+      },
+      {
+        "content": "## January"
+      },
+      {
+        "content": "## February"
+      },
+      {
+        "content": "## March"
+      },
+      {
+        "content": "## April"
+      },
+      {
+        "content": "## May"
+      },
+      {
+        "content": "## June"
+      },
+      {
+        "content": "## July"
+      },
+      {
+        "content": "## August"
+      },
+      {
+        "content": "## September"
+      },
+      {
+        "content": "## October"
+      },
+      {
+        "content": "## November"
+      },
+      {
+        "content": "## December",
+        "children": [
+          {
+            "content": "### Days"
+          }
+        ]
+      },
+      {
+        "content": "## 1"
+      },
+      {
+        "content": "## 2"
+      },
+      {
+        "content": "## 3"
+      },
+      {
+        "content": "## 4"
+      },
+      {
+        "content": "## 5"
+      },
+      {
+        "content": "## 6"
+      },
+      {
+        "content": "## 7"
+      },
+      {
+        "content": "## 8"
+      },
+      {
+        "content": "## 9"
+      },
+      {
+        "content": "## 10"
+      },
+      {
+        "content": "## 11"
+      },
+      {
+        "content": "## 12"
+      },
+      {
+        "content": "## 13"
+      },
+      {
+        "content": "## 14"
+      },
+      {
+        "content": "## 15"
+      },
+      {
+        "content": "## 16"
+      },
+      {
+        "content": "## 17"
+      },
+      {
+        "content": "## 18"
+      },
+      {
+        "content": "## 19"
+      },
+      {
+        "content": "## 20"
+      },
+      {
+        "content": "## 21"
+      },
+      {
+        "content": "## 22"
+      },
+      {
+        "content": "## 23"
+      },
+      {
+        "content": "## 24"
+      },
+      {
+        "content": "## 25"
+      },
+      {
+        "content": "## 26"
+      },
+      {
+        "content": "## 27"
+      },
+      {
+        "content": "## 28"
+      },
+      {
+        "content": "## 29"
+      },
+      {
+        "content": "## 30"
+      },
+      {
+        "content": "## 31\n\n`Google Calendar embed code` or a link to your calendar system can go here."
+      }
+    ]
+  },
+  {
+    "content": "# ![](https://dl.dropboxusercontent.com/s/wknr32qa46ga3n6/glyphicons_194_circle_question_mark.png?dl=1&token_hash=AAHEgsNGgALCsq1kvhhp7IPs_Sq1g0CIORulnOfYSKZD0w) Someday/Maybe"
+  },
+  {
+    "content": "# ![](https://dl.dropboxusercontent.com/s/z5jl0bzk5odpepa/glyphicons_071_book.png?dl=1&token_hash=AAFXoSBXc7HcFFWq1IIt59RbJE3GTBl6NyweKDWgkxs-cg) References"
+  }
+]
