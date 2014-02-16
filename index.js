@@ -152,7 +152,7 @@ function gingko_from_marked_tokens(tokens) {
  */
 
 function gingkoImport(text) {
-  var marked = require('marked');
+  var marked = require('./lib/marked');
 
   var marked_options = {};
 
