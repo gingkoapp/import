@@ -1,6 +1,12 @@
+var gingkoImport = require('..');
+var expect = require('chai').expect;
+
+function md_import_lines() {
+  var args = Array.prototype.slice.call(arguments);
+  return gingkoImport(args.join('\n'));
+}
+
 describe('Functional tests', function() {
-  var expect = require('chai').expect;
-  var gingkoImport = require('..');
 
   it('converts empty string to empty tree', function() {
     expect(gingkoImport('')).eql([
@@ -16,9 +22,9 @@ describe('Functional tests', function() {
 
 
   it('two headers make two blocks', function() {
-    expect(gingkoImport('' +
-      '# h1\n' +
-      '# h1\n'
+    expect(md_import_lines(
+      '# h1',
+      '# h1'
     )).eql([
         { content: "# h1" },
         { content: "# h1" }
@@ -26,9 +32,9 @@ describe('Functional tests', function() {
   });
 
   it('sub-header makes child block', function() {
-    expect(gingkoImport('' +
-      '# h1\n' +
-      '## h2\n'
+    expect(md_import_lines(
+      '# h1',
+      '## h2'
     )).eql([
         { content: "# h1", children: [
           {content: '## h2'}
@@ -37,10 +43,10 @@ describe('Functional tests', function() {
   });
 
   it('headers move depth in and out', function() {
-    expect(gingkoImport('' +
-      '# h1\n' +
-      '## h2\n' +
-      '# h1\n'
+    expect(md_import_lines(
+      '# h1',
+      '## h2',
+      '# h1'
     )).eql([
         { content: "# h1", children: [
           {content: '## h2'}
@@ -50,9 +56,9 @@ describe('Functional tests', function() {
   });
 
   it('skipping header levels creates empty block in between', function() {
-    expect(gingkoImport('' +
-      '# h\n' +
-      '### h\n'
+    expect(md_import_lines(
+      '# h',
+      '### h'
     )).eql([
         { content: "# h", children: [
           {content: '', children: [
@@ -63,11 +69,11 @@ describe('Functional tests', function() {
   });
 
   it('paragraph separator double newline is kept', function() {
-    expect(gingkoImport('' +
-      '# h1\n' +
-      'p1\n\n' +
-      'p2\n\n' +
-      '## h2\n'
+    expect(md_import_lines(
+      '# h1',
+      'p1\n',
+      'p2\n',
+      '## h2'
     )).eql([
         {
           "content": "# h1\n\np1\n\np2",
@@ -81,10 +87,10 @@ describe('Functional tests', function() {
   });
 
   it('multiple paragraphs after header are split into child blocks', function() {
-    expect(gingkoImport('' +
-      '# h\n' +
-      'p1\n\n' +
-      'p2\n\n'
+    expect(md_import_lines(
+      '# h',
+      'p1\n',
+      'p2\n'
     )).eql([
         { content: "# h", children: [
           { content: "p1"},
@@ -95,8 +101,8 @@ describe('Functional tests', function() {
   });
 
   it('single paragraph after header is kept in the same block', function() {
-    expect(gingkoImport('' +
-      '# h\n' +
+    expect(md_import_lines(
+      '# h',
       'p1'
     )).eql([
         { content: "# h\n\np1"}
@@ -104,10 +110,10 @@ describe('Functional tests', function() {
   });
 
   it('paragraphs are kept in block if there are child header-blocks', function() {
-    expect(gingkoImport('' +
-      '# h\n' +
-      'p1\n' +
-      '## h\n'
+    expect(md_import_lines(
+      '# h',
+      'p1',
+      '## h'
     )).eql([
         {
           "content": "# h\n\np1",
@@ -121,11 +127,11 @@ describe('Functional tests', function() {
   });
 
   it('lists imported inline', function() {
-    expect(gingkoImport('' +
-      '   * a\n' +
-      '   * b\n' +
-      '   * c\n' +
-      '')).eql([
+    expect(md_import_lines(
+      '   * a',
+      '   * b',
+      '   * c'
+    )).eql([
         {
           "content": '' +
             '   * a\n' +
@@ -134,9 +140,29 @@ describe('Functional tests', function() {
             '' }
       ]);
   });
+  it('numbered lists');
+  it('nested-mixed lists');
 
-  it('leaf list items imported as blocks');
-  it('code in leaf is kept as one block');
+  it('code in leaf is kept as one block', function() {
+    expect(md_import_lines(
+      'with node:',
+      '',
+      '    $ npm install rework',
+      '    $ echo foo'
+    )).eql([
+        {
+          "content": "",
+          "children": [
+            {
+              "content": "with node:"
+            },
+            {
+              "content": "    $ npm install rework\n    $ echo foo"
+            }
+          ]
+        }
+      ]);
+  });
 
 
 });
@@ -162,7 +188,7 @@ describe('Real-world examples', function() {
     expect(result).eql(json);
   });
 
-  it.skip('reworkcss', function() {
+  it('reworkcss', function() {
     var text = readFile(__dirname + '/fixtures/reworkcss.md', 'utf-8');
     var json = JSON.parse(readFile(__dirname + '/fixtures/reworkcss.json', 'utf-8'));
     var result = gingkoImport(text);

@@ -58,14 +58,22 @@ function as_blocks(tokens) {
         append_to_last_paragraph(acc, '\n');
         break;
 
+      case 'code':
+        create_paragraph(acc, _.map(t.text.split('\n'),function(s) {
+          return '    ' + s
+        }).join("\n"));
+        break;
+
       case 'list_end':
+      case 'space':
         //ignore
         break;
-      default :
+
+      default:
         // only for development
         console.warn("Unknown marked token: " + t.type);
         if (t.text) {
-          append_to_last_paragraph(acc)
+          append_to_last_paragraph(acc, t.text)
         }
     }
   });
