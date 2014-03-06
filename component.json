@@ -1,0 +1,15 @@
+{
+  "name": "gingko-import",
+  "version": "0.0.2",
+  "description": "Import markdown to Gingko tree json",
+  "repo": "gingkoapp/import",
+  "dependencies": {
+    "jashkenas/underscore": "*",
+    "gingkoapp/marked": "0.2.10-7"
+  },
+  "development": {
+    "chaijs/chai": "*"
+  },
+  "scripts": [ "index.js", "lib/marked.js" ],
+  "remotes": [ "https://gingko-worker:bd088c8b5bd741370b320fcc@raw.github.com" ]
+}
