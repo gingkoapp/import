@@ -1,6 +1,6 @@
 {
   "name": "gingko-import",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": "git://github.com:gingkoapp/import.git",
   "description": "Import markdown to Gingko tree json",
   "main": "index.js",
@@ -8,11 +8,11 @@
     "test": "mocha",
     "stat": "cloc index.js --quiet --by-file && cloc test/*.js --quiet --by-file"
   },
-  "devDependencies": {
-    "chai": "~1.8.1",
-    "mocha": "~1.17.0"
-  },
   "dependencies": {
-    "underscore": "1.6.0"
+    "underscore": "~1.6.0"
+  },
+  "devDependencies": {
+    "chai": "~1.9.0",
+    "mocha": "~1.17.0"
   }
 }
