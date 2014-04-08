@@ -1,6 +1,6 @@
 {
   "name": "gingko-import",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Import markdown to Gingko tree json",
   "repository": "gingkoapp/import",
   "dependencies": {
