@@ -1,12 +1,6 @@
 describe('gingko-import', function() {
   var expect = require('chai').expect;
-  var gingkoImport;
-
-  try {
-    gingkoImport = require('..');
-  } catch (err) {
-    gingkoImport = require('gingko-import');
-  }
+  var gingkoImport = require('../index');
 
   it('converts empty string to empty tree', function() {
     expect(gingkoImport('')).eql([{ content: '' }]);

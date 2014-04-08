@@ -1,28 +1,31 @@
-describe('real-world examples', function() {
-  if (typeof window !== 'undefined') return; // do not run in browser
+var expect = require('chai').expect;
+var gingkoImport = require('../index');
 
-  var readFile = require('fs').readFileSync;
-  var expect = require('chai').expect;
-  var gingkoImport = require('..');
+describe('real-world examples', function() {
+  if (typeof window == 'undefined') {
+    require.extensions['.md'] = function(module, name) {
+      module.exports = require('fs').readFileSync(name, 'utf-8');
+    };
+  }
 
   // как загрузить фикстуры в js окружении?
   it('Alien 1979', function() {
-    var text = readFile(__dirname + '/fixtures/alien-1979.md', 'utf-8');
-    var json = JSON.parse(readFile(__dirname + '/fixtures/alien-1979.json', 'utf-8'));
+    var text = require('./fixtures/alien-1979.md');
+    var json = require('./fixtures/alien-1979.json');
 
     expect(gingkoImport(text)).eql(json);
   });
 
   it('GTD', function() {
-    var text = readFile(__dirname + '/fixtures/gtd.md', 'utf-8');
-    var json = JSON.parse(readFile(__dirname + '/fixtures/gtd.json', 'utf-8'));
+    var text = require('./fixtures/gtd.md');
+    var json = require('./fixtures/gtd.json');
 
     expect(gingkoImport(text)).eql(json);
   });
 
   it('reworkcss', function() {
-    var text = readFile(__dirname + '/fixtures/reworkcss.md', 'utf-8');
-    var json = JSON.parse(readFile(__dirname + '/fixtures/reworkcss.json', 'utf-8'));
+    var text = require('./fixtures/reworkcss.md');
+    var json = require('./fixtures/reworkcss.json');
 
     expect(gingkoImport(text)).eql(json);
   });
