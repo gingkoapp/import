@@ -1,5 +1,5 @@
 {
-  "name": "gingko-import",
+  "name": "import",
   "version": "0.0.3",
   "description": "Import markdown to Gingko tree json",
   "repository": "gingkoapp/import",
