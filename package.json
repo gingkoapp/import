@@ -5,16 +5,16 @@
   "description": "Import markdown to Gingko tree json",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter spec && component-testem",
+    "postinstall": "npm link ../marked && npm link ../component-testem && component link ../marked && component install --dev",
+    "test": "mocha && component-testem",
     "stat": "cloc index.js --quiet --by-file && cloc test/*.js --quiet --by-file"
   },
   "dependencies": {
-    "underscore": "~1.6.0",
-    "marked": "git+ssh://git@github.com/gingkoapp/marked#0.2.10-9"
+    "underscore": "~1.6.0"
   },
   "devDependencies": {
-    "chai": "~1.9.0",
-    "mocha": "~1.17.0",
-    "component-testem": "~0.6.2"
+    "mocha": "*",
+    "chai": "*",
+    "component": "1.0.0-rc5"
   }
 }

@@ -2,14 +2,31 @@
   "name": "gingko-import",
   "version": "0.0.2",
   "description": "Import markdown to Gingko tree json",
-  "repo": "gingkoapp/import",
+  "repository": "gingkoapp/import",
   "dependencies": {
-    "jashkenas/underscore": "*",
-    "gingkoapp/marked": "0.2.10-9"
+    "jashkenas/underscore": "1.6.0",
+    "gingkoapp/marked": "0.2.10-12"
   },
   "development": {
-    "chaijs/chai": "*"
+    "dependencies": {
+      "chaijs/chai": "*"
+    },
+    "scripts": [
+      "test/test.js",
+      "test/integration-test.js"
+    ],
+    "templates": [
+      "test/fixtures/alien-1979.md",
+      "test/fixtures/gtd.md",
+      "test/fixtures/reworkcss.md"
+    ],
+    "json": [
+      "test/fixtures/alien-1979.json",
+      "test/fixtures/gtd.json",
+      "test/fixtures/reworkcss.json"
+    ]
   },
-  "scripts": [ "index.js" ],
-  "remotes": [ "https://gingko-worker:bd088c8b5bd741370b320fcc@raw.github.com" ]
+  "scripts": [
+    "index.js"
+  ]
 }
